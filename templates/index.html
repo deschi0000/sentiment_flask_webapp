@@ -21,8 +21,17 @@
         <div>
             <p>{{sentiment_score}}</p>
         </div>
-        <div id="radardiv">
-            {{ radar_data | safe }} <!-- Embed the radar chart -->
+        <div class="row">
+            <div class="col-md-6">
+                <div id="radardiv">
+                    {{ radar_data | safe }} <!-- Embed the radar chart -->
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div>
+                    {{ bar_data | safe }}
+                </div>
+            </div>
         </div>
         <div>
             <p>{{ url_text }}</p>

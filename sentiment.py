@@ -54,13 +54,14 @@ def home():
             #     sentiment_score.append(sentiment_score)
 
             # ========================================================
-            
+
             # Graph it
                         # Extract negative, neutral, and positive scores
             negative = sentiment_score['neg']
             neutral = sentiment_score['neu']
             positive = sentiment_score['pos']
 
+            # radar
             radar_data = go.Figure(data=go.Scatterpolar(
                 r=[negative, neutral, positive],
                 theta=['Negative', 'Neutral', 'Positive'],
@@ -75,12 +76,29 @@ def home():
                     )
                 )
             )
+
+            # bar chart
+            # Create bar chart data
+            bar_data = go.Figure(data=go.Bar(
+                x=['Negative', 'Neutral', 'Positive'],
+                y=[negative, neutral, positive],
+                marker_color=['red', 'gray', 'green']
+            ))
+            bar_data.update_layout(
+                title='Sentiment Analysis Bar Chart',
+                xaxis_title='Sentiment',
+                yaxis_title='Score',
+                yaxis=dict(range=[0, 1])  # Adjust the y-axis range if needed
+            )
+
+
             # ========================================================
 
             return render_template('index.html', 
                                    url_text=tokens_by_re, 
                                    sentiment_score=sentiment_score,
-                                   radar_data=radar_data.to_html(full_html=False, include_plotlyjs='cdn'))
+                                   radar_data=radar_data.to_html(full_html=False, include_plotlyjs='cdn'),
+                                   bar_data=bar_data.to_html(full_html=False, include_plotlyjs='cdn'))
         except Exception as e:
             return "Error occurred: " + str(e)
 
