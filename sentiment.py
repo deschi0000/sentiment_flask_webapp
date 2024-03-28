@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 
+import plotly.graph_objs as go
 
 app = Flask(__name__)
 
@@ -52,7 +53,34 @@ def home():
             #     sentiment_score = sid.polarity_scores(t)
             #     sentiment_score.append(sentiment_score)
 
-            return render_template('index.html', url_text=tokens_by_re, sentiment_score=sentiment_score)
+            # ========================================================
+            
+            # Graph it
+                        # Extract negative, neutral, and positive scores
+            negative = sentiment_score['neg']
+            neutral = sentiment_score['neu']
+            positive = sentiment_score['pos']
+
+            radar_data = go.Figure(data=go.Scatterpolar(
+                r=[negative, neutral, positive],
+                theta=['Negative', 'Neutral', 'Positive'],
+                fill='toself'
+            ))
+            radar_data.update_layout(
+                title='Sentiment Analysis Radar Chart',
+                polar=dict(
+                    radialaxis=dict(
+                        visible=True,
+                        range=[0, 1]
+                    )
+                )
+            )
+            # ========================================================
+
+            return render_template('index.html', 
+                                   url_text=tokens_by_re, 
+                                   sentiment_score=sentiment_score,
+                                   radar_data=radar_data.to_html(full_html=False, include_plotlyjs='cdn'))
         except Exception as e:
             return "Error occurred: " + str(e)
 
